@@ -39,7 +39,7 @@ $ yarn add encrypt-char
 
 ## Generate a New Keychar
 
-### [`encryptChar.generateKey(salt, password)`](#encryptchargeneratekeysalt-number-password-string)
+#### [`encryptChar.generateKey(salt, password)`](#encryptchargeneratekeysalt-number-password-string)
 
 ```js
 import { encryptChar } from 'encrypt-char';
@@ -54,7 +54,7 @@ const myKeychar = encryptChar.generateKey(mySalt, mySecretPassword);
 
 ## Hard Encode Data
 
-### [`encryptChar.hardEncode(data, keychar, password)`](#encryptcharhardencodedata-string-keychar-string-password-string)
+#### [`encryptChar.hardEncode(data, keychar, password)`](#encryptcharhardencodedata-string-keychar-string-password-string)
 
 ```js
 import { encryptChar } from 'encrypt-char';
@@ -73,7 +73,7 @@ const resultEncode = encryptChar.hardEncode(
 
 ## Hard Decode Data
 
-### [`encryptChar.hardDecode(encodedData, keychar, password)`](#encryptcharharddecodeencodeddata-string-keychar-string-password-string)
+#### [`encryptChar.hardDecode(encodedData, keychar, password)`](#encryptcharharddecodeencodeddata-string-keychar-string-password-string)
 
 ```js
 import { encryptChar } from 'encrypt-char';
@@ -93,7 +93,7 @@ const resultDecode = encryptChar.hardDecode(
 
 ## Soft Encode Data
 
-### [`encryptChar.softEncode(data)`](#encryptcharsoftencodedata-string)
+##### [`encryptChar.softEncode(data)`](#encryptcharsoftencodedata-string)
 
 ```js
 import { encryptChar } from 'encrypt-char';
@@ -107,7 +107,7 @@ const resultEncode = encryptChar.softEncode(myText);
 
 ## Soft Decode Data
 
-### [`encryptChar.softDecode(encodedData)`](#encryptcharsoftdecodeencodeddata-string)
+#### [`encryptChar.softDecode(encodedData)`](#encryptcharsoftdecodeencodeddata-string)
 
 ```js
 import { encryptChar } from 'encrypt-char';
@@ -122,30 +122,30 @@ const resultDecode = encryptChar.softDecode(myEncodedText);
 
 <br />
 
-## Paramenters
+## Parameters
 
-### `encryptChar.generateKey(salt: number, password: string)`
+#### `encryptChar.generateKey(salt: number, password: string)`
 
 The <b>"salt"</b> to increase the encoding complexity. <br>
 The <b>"password"</b> to sign and validate keychar. <br><br>
 
-### `encryptChar.hardEncode(data: string, keychar: string, password: string)`
+#### `encryptChar.hardEncode(data: string, keychar: string, password: string)`
 
 The <b>"data"</b> text to encode. <br>
 The <b>"keychar"</b> generated to encode text. <br>
 The <b>"password"</b> to sign and validate keychar. <br><br>
 
-### `encryptChar.hardDecode(encodedData: string, keychar: string, password: string)`
+#### `encryptChar.hardDecode(encodedData: string, keychar: string, password: string)`
 
 The <b>"encodedData"</b> text previously encoded. <br>
 The <b>"keychar"</b> generated to decode text. <br>
 The <b>"password"</b> to sign and validate keychar. <br><br>
 
-### `encryptChar.softEncode(data: string)`
+#### `encryptChar.softEncode(data: string)`
 
 The <b>"data"</b> text to encode. <br><br>
 
-### `encryptChar.softDecode(encodedData: string)`
+#### `encryptChar.softDecode(encodedData: string)`
 
 The <b>"encodedData"</b> text previously encoded. <br><br>
 
