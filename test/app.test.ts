@@ -492,7 +492,7 @@ describe('Generate Keychar:', () => {
   );
 
   it('should be generate keychar successfully', () => {
-    expect(keycharGen.resultKeyChar?.length).toEqual(1215);
+    expect(keycharGen?.length).toEqual(1215);
   });
 
   it('should not be generated keychar with "salt" error', () => {

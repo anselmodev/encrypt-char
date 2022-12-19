@@ -48,6 +48,8 @@ const mySalt = 6;
 const mySecretPassword = 'secretPassword1234';
 
 const myKeychar = encryptChar.generateKey(mySalt, mySecretPassword);
+
+// return BEGIN KEY ---34230LPRYjLw0kaNhXUtNmdk0juT0278W756LH9MNox2....--- END KEY
 ```
 
 ## Hard Encode Data
@@ -98,7 +100,7 @@ import { encryptChar } from 'encrypt-char';
 
 const myText = 'Lorem ipsum dolor sit amet. 1234567890 !@#$%^&*()_+';
 
-const resultDecode = encryptChar.softEncode(myText);
+const resultEncode = encryptChar.softEncode(myText);
 
 // return 'r8VKooiJeVCJjAUIgATO4cjN1QzMyEDIuQXZtFGI0l2cgI3bs9GZg0WdzBXag0WZy9GT'
 ```

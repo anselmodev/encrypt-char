@@ -58,6 +58,6 @@ export const encryptChar = {
   },
 
   generateKey(salt: number, password: string) {
-    return keycharGen(salt, password);
+    return keycharGen(salt, password).resultKeyChar;
   },
 };
