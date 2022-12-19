@@ -1,8 +1,8 @@
-// import { encryptChar } from '../src';
-import { baseEncode, baseDecode } from '../src/helpers/base64';
+import { baseEncode, baseDecode } from '../src/lib/base64';
 import { patterns } from '../src/helpers/patterns';
 import {
-  base64Mock,
+  softEncodeDecodeMock,
+  hardEncodeDecodeMock,
   validSaltNumberMock,
   invalidSaltNumberMock,
   beginEndKeysMock,
@@ -19,6 +19,7 @@ import {
 } from '../src/helpers/salt-password';
 import { keycharGen, keycharValidate, keycharParse } from '../src/lib/keychar';
 import { checkArraySameValues } from '../src/helpers/array-check-values';
+import { encryptChar } from '../src';
 
 describe('Check Array With Same Values:', () => {
   const array1 = [1, 2, 3, 4, 5];
@@ -36,11 +37,15 @@ describe('Check Array With Same Values:', () => {
 
 describe('Base Encode:', () => {
   it('should be encode', () => {
-    expect(baseEncode(base64Mock.decodedText)).toEqual(base64Mock.encodedText);
+    expect(baseEncode(softEncodeDecodeMock.decodedText)).toEqual(
+      softEncodeDecodeMock.encodedText
+    );
   });
 
   it('should be decode', () => {
-    expect(baseDecode(base64Mock.encodedText)).toEqual(base64Mock.decodedText);
+    expect(baseDecode(softEncodeDecodeMock.encodedText)).toEqual(
+      softEncodeDecodeMock.decodedText
+    );
   });
 
   it('should return a throw error of invalid string value', () => {
@@ -297,8 +302,142 @@ describe('Keychar Parse:', () => {
   });
 });
 
-// describe('Decrypt String', () => {
-//   it('decode', () => {
-//     expect(encryptChar.decode('', '')).toEqual('decoded');
-//   });
-// });
+describe('Soft Encode and Decode', () => {
+  it('should encode data successfuly', () => {
+    expect(encryptChar.softEncode(softEncodeDecodeMock.decodedText)).toEqual(
+      softEncodeDecodeMock.encodedText
+    );
+  });
+
+  it('should decode data successfuly', () => {
+    expect(encryptChar.softDecode(softEncodeDecodeMock.encodedText)).toEqual(
+      softEncodeDecodeMock.decodedText
+    );
+  });
+
+  it('should return a throw error of encode empty data', () => {
+    expect(() => {
+      encryptChar.softEncode('');
+    }).toThrow('Invalid "data" to encode.');
+  });
+
+  it('should return a throw error of decode empty data', () => {
+    expect(() => {
+      encryptChar.softDecode('');
+    }).toThrow('Invalid "data" to decode.');
+  });
+});
+
+describe('Hard Encode and Decode', () => {
+  it('should encode data successfuly', () => {
+    expect(
+      encryptChar.hardEncode(
+        hardEncodeDecodeMock.decodedText,
+        validKeycharMock,
+        passwordSecret
+      )
+    ).toEqual(hardEncodeDecodeMock.encodedText);
+  });
+
+  it('should decode data successfuly', () => {
+    expect(
+      encryptChar.hardDecode(
+        hardEncodeDecodeMock.encodedText,
+        validKeycharMock,
+        passwordSecret
+      )
+    ).toEqual(hardEncodeDecodeMock.decodedText);
+  });
+
+  it('should return a throw error of empty "data" to encode', () => {
+    expect(() => {
+      encryptChar.hardEncode('', validKeycharMock, passwordSecret);
+    }).toThrow('Empty "data" value.');
+  });
+
+  it('should return a throw error of empty "keychar" to encode', () => {
+    expect(() => {
+      encryptChar.hardEncode(
+        hardEncodeDecodeMock.encodedText,
+        '',
+        passwordSecret
+      );
+    }).toThrow('Empty "keychar" value.');
+  });
+
+  it('should return a throw error of empty "password" to encode', () => {
+    expect(() => {
+      encryptChar.hardEncode(
+        hardEncodeDecodeMock.encodedText,
+        validKeycharMock,
+        ''
+      );
+    }).toThrow('Empty "password" value.');
+  });
+
+  it('should return a throw error of empty "data" to decode', () => {
+    expect(() => {
+      encryptChar.hardDecode('', validKeycharMock, passwordSecret);
+    }).toThrow('Empty "data" value.');
+  });
+
+  it('should return a throw error of empty "keychar" to decode', () => {
+    expect(() => {
+      encryptChar.hardDecode(
+        hardEncodeDecodeMock.encodedText,
+        '',
+        passwordSecret
+      );
+    }).toThrow('Empty "keychar" value.');
+  });
+
+  it('should return a throw error of empty "password" to decode', () => {
+    expect(() => {
+      encryptChar.hardDecode(
+        hardEncodeDecodeMock.encodedText,
+        validKeycharMock,
+        ''
+      );
+    }).toThrow('Empty "password" value.');
+  });
+
+  it('should return a throw error of invalid "keychar" to encode', () => {
+    expect(() => {
+      encryptChar.hardEncode(
+        hardEncodeDecodeMock.encodedText,
+        invalidKeycharMock,
+        passwordSecret
+      );
+    }).toThrow('Invalid Keychar.');
+  });
+
+  it('should return a throw error of invalid "keychar" to decode', () => {
+    expect(() => {
+      encryptChar.hardDecode(
+        hardEncodeDecodeMock.encodedText,
+        invalidKeycharMock,
+        passwordSecret
+      );
+    }).toThrow('Invalid Keychar.');
+  });
+
+  it('should return a throw error of invalid "password" to encode', () => {
+    expect(() => {
+      encryptChar.hardEncode(
+        hardEncodeDecodeMock.encodedText,
+        invalidKeycharMock,
+        'Fake Password'
+      );
+    }).toThrow('Invalid Keychar.');
+  });
+
+  it('should return a throw error of invalid "password" to decode', () => {
+    expect(() => {
+      encryptChar.hardDecode(
+        hardEncodeDecodeMock.encodedText,
+        invalidKeycharMock,
+        'Fake Password'
+      );
+    }).toThrow('Invalid Keychar.');
+  });
+});

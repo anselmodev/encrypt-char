@@ -1,22 +1,44 @@
-import { baseEncode, baseDecode } from './helpers/base64';
+import { baseEncode, baseDecode } from './lib/base64';
+import { keycharParse } from './lib/keychar';
+import { patterns } from './helpers/patterns';
 
 export const encryptChar = {
   hardEncode(data: string, keychar: string, password: string) {
-    const getData = data;
-    const getKeychar = keychar;
+    if (!data?.length || typeof data !== 'string') {
+      throw new Error('Empty "data" value.');
+    } else if (!keychar?.length || typeof keychar !== 'string') {
+      throw new Error('Empty "keychar" value.');
+    } else if (!password?.length || typeof password !== 'string') {
+      throw new Error('Empty "password" value.');
+    }
 
-    console.log(getData, getKeychar, password);
+    const keycharObject = keycharParse(keychar, password, 'encode');
 
-    return 'encoded';
+    const encodeData = baseEncode(data);
+
+    return encodeData.replace(
+      patterns.baseKeysReg,
+      (m: any) => keycharObject[m]
+    );
   },
 
   hardDecode(data: string, keychar: string, password: string) {
-    const getData = data;
-    const getKeychar = keychar;
+    if (!data?.length || typeof data !== 'string') {
+      throw new Error('Empty "data" value.');
+    } else if (!keychar?.length || typeof keychar !== 'string') {
+      throw new Error('Empty "keychar" value.');
+    } else if (!password?.length || typeof password !== 'string') {
+      throw new Error('Empty "password" value.');
+    }
 
-    console.log(getData, getKeychar, password);
+    const keycharObject = keycharParse(keychar, password, 'decode');
+    const unmask = data.replace(
+      patterns.baseKeysReg,
+      (m: any) => keycharObject[m]
+    );
+    const decodeData = baseDecode(unmask);
 
-    return 'decoded';
+    return decodeData;
   },
 
   softEncode(data: string) {
@@ -29,7 +51,7 @@ export const encryptChar = {
 
   softDecode(data: string) {
     if (!data?.length || typeof data !== 'string') {
-      throw new Error('Invalid "data" to encode.');
+      throw new Error('Invalid "data" to decode.');
     }
 
     return baseDecode(data);

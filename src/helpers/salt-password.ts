@@ -1,4 +1,4 @@
-import { baseEncode, baseDecode } from './base64';
+import { baseEncode, baseDecode } from '../lib/base64';
 
 const saltPasswordEncode = (salt: number | string, password: string) => {
   const getSalt = salt ? Number(salt) : 0;

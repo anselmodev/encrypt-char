@@ -1,6 +1,11 @@
-const base64Mock = {
+const softEncodeDecodeMock = {
   encodedText:
     'TG9yZW0gaXBzdW0gZG9sb3Igc2l0IGFtZXQuIDEyMzQ1Njc4OTAgIUAjJCVeJiooKV8r',
+  decodedText: 'Lorem ipsum dolor sit amet. 1234567890 !@#$%^&*()_+',
+};
+const hardEncodeDecodeMock = {
+  encodedText:
+    'ALN6xf9eDmUQdf9exLN0vGCel2s9CLJZxmV4CKP6RQV3bnlF5AoeC7on1wjM1HzzIjYh',
   decodedText: 'Lorem ipsum dolor sit amet. 1234567890 !@#$%^&*()_+',
 };
 const validSaltNumberMock = 4;
@@ -19,7 +24,8 @@ const invalidKeycharMock =
   'BEGIN KEY ----MzQyMzBMUFJRek15RURkbEozWWxORlp5OTJkek5YWXdsVlQuNARPL03243RPL03243.sT0xr3wW7Iww8mQ9JGHaUmmxhIJ7SWJ6toFB9o6V5OrmkZY0b31tGNO6qkQpTeDZAHChDketoSsfdZQ77PriJeaTWj0XaZSTOtTeey97cQzVhFMOvhquitKUQAJpVEgxIeGl14Dyt53x17Q2ER38dCUt31RHn0cGixmWyjKEPi5tGHRdVXYLfBHUHTtJI0tjgyIvSEPRwzSxCSGUwDzQ8FFLrE8UIolAatspsCSC8uevqCyEkgnq.D8mQ96sCSCTsfdZxgyIvZTeeyVriJeJ9o6ViDyt5CyEpmWyjFUmmx0CSGUbzVhFC7IwwufBHUcMOvhj3x173rE8Ur5tGHK5OrmsRdVXzwzSxdquitEJGHaBr3wWUQ77PGhIJ7ItoFBWaTWjMb31tQDZAHmUt319kgnqySEPRwI0tj78uevvHTtJAsT0xggxIe5atsp1wDzQHSWJ6LkZY0l38dCRChDkSetoSfJpVEocGixX0XaZ4IolAhGl14eKUQAtY8SLa97cQ28FFLnRHn0YSTOtkQ2ERqKEPiPQpTeOO6qkNGmrN.KsT0xgquitACSGUccGixxJGHajSTOt18FFLH8mQ9YfBHUWMOvhJ3x179QpTevtoFBwetoS49o6VlgyIvnb31tGGmrNhkZY0IriJe0O6qkQgxIedUt31P38dCURdVX7Q2ERL8uevCGl14fr3wWRDZAHVaTWjXKEPiN5Orm6IolAEUmmxyzVhF8atspoSEPReDyt5p97cQ37IwwkTeeyOsfdZsHTtJTY8SLaI0tjtJpVEzKUQAmQ77PF0XaZimWyjMsCSCZkgnqDSWJ62hIJ7BwzSxuRHn0rrE8UqChDkSwDzQ5qCyEb5tGH-------- END KEY';
 
 export {
-  base64Mock,
+  softEncodeDecodeMock,
+  hardEncodeDecodeMock,
   validSaltNumberMock,
   invalidSaltNumberMock,
   beginEndKeysMock,
