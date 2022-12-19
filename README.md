@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./encrypt-icon.png" alt="Data encryption and decryption tool" title="Data encryption and decryption tool" width="200" />
+  <img src="./encrypt-icon.jpg" alt="Data encryption and decryption tool" title="Data encryption and decryption tool" width="200" />
 </p>
 
 <h1 align="center">encrypt-char</h1>
