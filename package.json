@@ -34,7 +34,11 @@
     "trailingComma": "es5"
   },
   "name": "encrypt-char",
-  "author": "anselmodev",
+  "author": "Anselmo Lima - @anselmodev",
+  "bugs": {
+    "url": "https://github.com/anselmodev/encrypt-char/issues"
+  },
+  "homepage": "https://github.com/anselmodev/encrypt-char#readme",
   "module": "dist/encrypt-char.esm.js",
   "size-limit": [
     {
@@ -45,6 +49,15 @@
       "path": "dist/encrypt-char.esm.js",
       "limit": "10 KB"
     }
+  ],
+  "keywords": [
+    "encryption",
+    "crypt",
+    "base64",
+    "crypto",
+    "password",
+    "auth",
+    "authentication"
   ],
   "devDependencies": {
     "@size-limit/preset-small-lib": "^8.1.0",

@@ -1,5 +1,5 @@
 import { baseEncode, baseDecode } from './lib/base64';
-import { keycharParse } from './lib/keychar';
+import { keycharParse, keycharGen } from './lib/keychar';
 import { patterns } from './helpers/patterns';
 
 export const encryptChar = {
@@ -55,5 +55,9 @@ export const encryptChar = {
     }
 
     return baseDecode(data);
+  },
+
+  generateKey(salt: number, password: string) {
+    return keycharGen(salt, password);
   },
 };

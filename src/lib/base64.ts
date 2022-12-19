@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer';
 import { patterns } from '../helpers/patterns';
 
 const basePatternKey = patterns.basePatternKey;
@@ -16,14 +17,19 @@ const baseEncode = (data: string) => {
     .replace(new RegExp(basePatternKey[1], 'g'), basePatternChar[1])
     .replace(new RegExp(basePatternKey[2], 'g'), basePatternChar[2]);
 
-  return replaceSpecialKeys;
+  return replaceSpecialKeys
+    .split('')
+    .reverse()
+    .join('');
 };
 const baseDecode = (data: string) => {
   if (!data?.length || typeof data !== 'string') {
     throw new Error('Invalid string value.');
   }
 
-  const revertSpecialKeys = data
+  const prepareData = data.split('').reverse().join('');
+
+  const revertSpecialKeys = prepareData
     .replace(new RegExp(`${basePatternChar[0]}`, 'g'), basePatternKey[3])
     .replace(new RegExp(`${basePatternChar[1]}`, 'g'), basePatternKey[4])
     .replace(new RegExp(`${basePatternChar[2]}`, 'g'), basePatternKey[5]);

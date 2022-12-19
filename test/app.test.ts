@@ -3,7 +3,10 @@ import { patterns } from '../src/helpers/patterns';
 import {
   softEncodeDecodeMock,
   hardEncodeDecodeMock,
+  decodedText,
   validSaltNumberMock,
+  validKeycharAlternativeSaltMock,
+  validKeycharAlternativePasswordMock,
   invalidSaltNumberMock,
   beginEndKeysMock,
   passwordSecret,
@@ -37,14 +40,14 @@ describe('Check Array With Same Values:', () => {
 
 describe('Base Encode:', () => {
   it('should be encode', () => {
-    expect(baseEncode(softEncodeDecodeMock.decodedText)).toEqual(
+    expect(baseEncode(decodedText)).toEqual(
       softEncodeDecodeMock.encodedText
     );
   });
 
   it('should be decode', () => {
     expect(baseDecode(softEncodeDecodeMock.encodedText)).toEqual(
-      softEncodeDecodeMock.decodedText
+      decodedText
     );
   });
 
@@ -302,16 +305,16 @@ describe('Keychar Parse:', () => {
   });
 });
 
-describe('Soft Encode and Decode', () => {
-  it('should encode data successfuly', () => {
-    expect(encryptChar.softEncode(softEncodeDecodeMock.decodedText)).toEqual(
+describe('Soft Encode and Decode:', () => {
+  it('should encode data successfully', () => {
+    expect(encryptChar.softEncode(decodedText)).toEqual(
       softEncodeDecodeMock.encodedText
     );
   });
 
-  it('should decode data successfuly', () => {
+  it('should decode data successfully', () => {
     expect(encryptChar.softDecode(softEncodeDecodeMock.encodedText)).toEqual(
-      softEncodeDecodeMock.decodedText
+      decodedText
     );
   });
 
@@ -328,25 +331,25 @@ describe('Soft Encode and Decode', () => {
   });
 });
 
-describe('Hard Encode and Decode', () => {
-  it('should encode data successfuly', () => {
+describe('Hard Encode and Decode:', () => {
+  it('should encode data successfully', () => {
     expect(
       encryptChar.hardEncode(
-        hardEncodeDecodeMock.decodedText,
+        decodedText,
         validKeycharMock,
         passwordSecret
       )
     ).toEqual(hardEncodeDecodeMock.encodedText);
   });
 
-  it('should decode data successfuly', () => {
+  it('should decode data successfully', () => {
     expect(
       encryptChar.hardDecode(
         hardEncodeDecodeMock.encodedText,
         validKeycharMock,
         passwordSecret
       )
-    ).toEqual(hardEncodeDecodeMock.decodedText);
+    ).toEqual(decodedText);
   });
 
   it('should return a throw error of empty "data" to encode', () => {
@@ -411,6 +414,46 @@ describe('Hard Encode and Decode', () => {
     }).toThrow('Invalid Keychar.');
   });
 
+  it('should return a throw error of alternative "keychar" with different "password" to encode', () => {
+    expect(() => {
+      encryptChar.hardEncode(
+        hardEncodeDecodeMock.encodedText,
+        validKeycharAlternativePasswordMock,
+        passwordSecret
+      );
+    }).toThrow('Invalid Keychar.');
+  });
+
+  it('should return a throw error of alternative "keychar" with different "password" to decode', () => {
+    expect(() => {
+      encryptChar.hardDecode(
+        hardEncodeDecodeMock.encodedText,
+        validKeycharAlternativePasswordMock,
+        passwordSecret
+      );
+    }).toThrow('Invalid Keychar.');
+  });
+
+  it('should return a throw error of alternative "keychar" with different "salt" to encode', () => {
+    expect(() => {
+      encryptChar.hardEncode(
+        hardEncodeDecodeMock.encodedText,
+        validKeycharAlternativeSaltMock,
+        passwordSecret
+      );
+    }).toThrow('Invalid Keychar.');
+  });
+
+  it('should return a throw error of alternative "keychar" with different "salt" to decode', () => {
+    expect(() => {
+      encryptChar.hardDecode(
+        hardEncodeDecodeMock.encodedText,
+        validKeycharAlternativeSaltMock,
+        passwordSecret
+      );
+    }).toThrow('Invalid Keychar.');
+  });
+
   it('should return a throw error of invalid "keychar" to decode', () => {
     expect(() => {
       encryptChar.hardDecode(
@@ -439,5 +482,28 @@ describe('Hard Encode and Decode', () => {
         'Fake Password'
       );
     }).toThrow('Invalid Keychar.');
+  });
+});
+
+describe('Generate Keychar:', () => {
+  const keycharGen = encryptChar.generateKey(
+    validSaltNumberMock,
+    passwordSecret
+  );
+
+  it('should be generate keychar successfully', () => {
+    expect(keycharGen.resultKeyChar?.length).toEqual(1215);
+  });
+
+  it('should not be generated keychar with "salt" error', () => {
+    expect(() => {
+      encryptChar.generateKey(invalidSaltNumberMock, passwordSecret);
+    }).toThrow('Invalid Salt value.');
+  });
+
+  it('should not be generated keychar with "password" empty', () => {
+    expect(() => {
+      encryptChar.generateKey(validSaltNumberMock, '');
+    }).toThrow('Empty Password.');
   });
 });
