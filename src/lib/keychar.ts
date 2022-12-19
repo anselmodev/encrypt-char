@@ -1,6 +1,6 @@
 import { patterns } from '../helpers/patterns';
 import { beginAndEndKeys } from '../helpers/begin-end-keys';
-import { secretGenerator } from '../helpers/secret-generator';
+import { secretGenerator, checkSecret } from '../helpers/secret';
 import {
   saltPasswordEncode,
   // saltPasswordDecode,
@@ -117,72 +117,94 @@ const keycharValidate = (keychar: string, password: string) => {
     isValid:
       calculationResult === keychar?.length && getSaltPassword === saltPassword,
     encodedSaltPassword: saltPassword,
+    getSaltValue,
   };
 };
 
-// const keyCharParse = (keychar: string, type: 'encode' | 'decode') => {
-//   // let getSalt: number;
-//   // let beginEndKeys: any;
-//   // let getBeginEnd: any;
-//   // let keycharResult: any = '';
-//   // let secretResult: string[] = [];
-//   // let primaryKey: any;
-//   // let secondaryKey: any;
-//   // // validar o keychar
-//   // if (keyCharCheck(keychar)) {
-//   //   getSalt = saltPasswordDecode(keychar);
-//   //   beginEndKeys = beginAndEndKeys(getSalt);
-//   //   getBeginEnd = Object.keys(beginEndKeys);
-//   // } else {
-//   //   throw new Error('Invalid Keychar!');
-//   // }
-//   // // remove BEGIN KEY and END KEY words
-//   // if (
-//   //   getBeginEnd.includes('stringStart') &&
-//   //   getBeginEnd.includes('stringEnd')
-//   // ) {
-//   //   keycharResult = keychar
-//   //     .replace(beginEndKeys.stringStart, '')
-//   //     .replace(beginEndKeys.stringEnd, '');
-//   // } else {
-//   //   throw new Error('Invalid BEGIN KEY and END KEY!');
-//   // }
-//   // // split keychar
-//   // keycharResult = keycharResult.split('.');
-//   // // convert secret string to object
-//   // if (keycharResult?.length === 3) {
-//   //   secretResult = checkSecret(keycharResult[0], getSalt);
-//   // } else {
-//   //   throw new Error('Invalid Secret Object!');
-//   // }
-//   // // replaced with commas the secret combination from keycharResult (index 1 and index 2)
-//   // if (secretResult?.length === 62) {
-//   //   const regSecret = new RegExp(secretResult.join('|'), 'g');
-//   //   primaryKey = keycharResult[1].replace(regSecret, ',');
-//   //   secondaryKey = keycharResult[2].replace(regSecret, ',');
-//   // } else {
-//   //   throw new Error('Invalid Secret Object!');
-//   // }
-//   // // split arrays and remove last index
-//   // primaryKey = primaryKey.split(',');
-//   // secondaryKey = secondaryKey.split(',');
-//   // primaryKey.pop();
-//   // secondaryKey.pop();
-//   // if (primaryKey?.length === 62 && secondaryKey?.length === 62) {
-//   //   const finalObject: any = {};
-//   //   if (type === 'encode') {
-//   //     primaryKey.forEach(
-//   //       (item: string, indx: number) => (finalObject[item] = secondaryKey[indx])
-//   //     );
-//   //   } else if (type === 'decode') {
-//   //     secondaryKey.forEach(
-//   //       (item: string, indx: number) => (finalObject[item] = primaryKey[indx])
-//   //     );
-//   //   }
-//   //   return finalObject;
-//   // } else {
-//   //   throw new Error('Invalid primary and secondary keys!');
-//   // }
-// };
+const keycharParse = (
+  keychar: string,
+  password: string,
+  type: 'encode' | 'decode'
+) => {
+  if (!keychar?.length || typeof keychar !== 'string') {
+    throw new Error('Invalid "keychar" value.');
+  } else if (!password?.length || typeof password !== 'string') {
+    throw new Error('Invalid "password" value.');
+  } else if (!type?.length || !['encode', 'decode'].includes(type)) {
+    throw new Error('Invalid "type" Parse.');
+  }
 
-export { keycharValidate, keycharGen /* keyCharParse */ };
+  let getSalt: number;
+  let beginEndKeys: any;
+  let getBeginEnd: any;
+  let keycharResult: any = '';
+  let secretResult: string[] = [];
+  let primaryKey: any;
+  let secondaryKey: any;
+  const checkKeychar = keycharValidate(keychar, password);
+
+  if (checkKeychar?.isValid) {
+    getSalt = checkKeychar.getSaltValue;
+    beginEndKeys = beginAndEndKeys(getSalt);
+    getBeginEnd = Object.keys(beginEndKeys);
+  } else {
+    throw new Error('Invalid Keychar.');
+  }
+
+  // remove BEGIN KEY and END KEY words
+  if (
+    getBeginEnd.includes('stringStart') &&
+    getBeginEnd.includes('stringEnd')
+  ) {
+    keycharResult = keychar
+      .replace(beginEndKeys.stringStart, '')
+      .replace(beginEndKeys.stringEnd, '');
+  } else {
+    throw new Error('Invalid BEGIN KEY and END KEY!');
+  }
+
+  // split keychar
+  keycharResult = keycharResult.split('.');
+
+  // convert secret string to object
+  if (keycharResult?.length === 4) {
+    secretResult = checkSecret(keycharResult[1], getSalt);
+  } else {
+    throw new Error('Invalid Secret Object!');
+  }
+
+  // replaced with commas the secret combination from keycharResult (index 1 and index 2)
+  if (secretResult?.length === 62) {
+    const regSecret = new RegExp(secretResult.join('|'), 'g');
+    primaryKey = keycharResult[2].replace(regSecret, ',');
+    secondaryKey = keycharResult[3].replace(regSecret, ',');
+  } else {
+    throw new Error('Invalid Secret Object!');
+  }
+
+  // split arrays and remove last index
+  primaryKey = primaryKey.split(',');
+  secondaryKey = secondaryKey.split(',');
+  primaryKey.pop();
+  secondaryKey.pop();
+
+  if (primaryKey?.length === 62 && secondaryKey?.length === 62) {
+    const finalObject: any = {};
+
+    if (type === 'encode') {
+      primaryKey.forEach(
+        (item: string, indx: number) => (finalObject[item] = secondaryKey[indx])
+      );
+    } else if (type === 'decode') {
+      secondaryKey.forEach(
+        (item: string, indx: number) => (finalObject[item] = primaryKey[indx])
+      );
+    }
+
+    return finalObject;
+  } else {
+    throw new Error('Invalid primary and secondary keys!');
+  }
+};
+
+export { keycharValidate, keycharGen, keycharParse };
