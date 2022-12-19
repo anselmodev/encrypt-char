@@ -1,103 +1,163 @@
-# TSDX User Guide
+<p align="center">
+  <img src="./encrypt-icon.png" alt="Data encryption and decryption tool" title="Data encryption and decryption tool" width="200" />
+</p>
 
-Congrats! You just saved yourself hours of work by bootstrapping this project with TSDX. Let’s get you oriented with what’s here and how to use it.
+<h1 align="center">encrypt-char</h1>
 
-> This TSDX setup is meant for developing libraries (not apps!) that can be published to NPM. If you’re looking to build a Node app, you could use `ts-node-dev`, plain `ts-node`, or simple `tsc`.
+## Features
 
-> If you’re new to TypeScript, checkout [this handy cheatsheet](https://devhints.io/typescript)
+- Lightweight, zero dependencies.
+- Works with any NodeJs projects.
+- High performance and security.
+- Simple usage.
 
-## Commands
+<br>
 
-TSDX scaffolds your new library inside `/src`.
+## Install
 
-To run TSDX, use:
+#### Install with NPM or YARN:
 
-```bash
-npm start # or yarn start
+```shell script
+$ npm i encrypt-char
 ```
 
-This builds to `/dist` and runs the project in watch mode so any edits you save inside `src` causes a rebuild to `/dist`.
+or
 
-To do a one-off build, use `npm run build` or `yarn build`.
-
-To run tests, use `npm test` or `yarn test`.
-
-## Configuration
-
-Code quality is set up for you with `prettier`, `husky`, and `lint-staged`. Adjust the respective fields in `package.json` accordingly.
-
-### Jest
-
-Jest tests are set up to run with `npm test` or `yarn test`.
-
-### Bundle Analysis
-
-[`size-limit`](https://github.com/ai/size-limit) is set up to calculate the real cost of your library with `npm run size` and visualize the bundle with `npm run analyze`.
-
-#### Setup Files
-
-This is the folder structure we set up for you:
-
-```txt
-/src
-  index.tsx       # EDIT THIS
-/test
-  blah.test.tsx   # EDIT THIS
-.gitignore
-package.json
-README.md         # EDIT THIS
-tsconfig.json
+```shell script
+$ yarn add encrypt-char
 ```
 
-### Rollup
+#### Methods
 
-TSDX uses [Rollup](https://rollupjs.org) as a bundler and generates multiple rollup configs for various module formats and build settings. See [Optimizations](#optimizations) for details.
+- [`generateKey`](#generate-a-new-keychar)
+- [`hardEncode`](#hard-encode-data)
+- [`hardDecode`](#hard-decode-data)
+- [`softEncode`](#soft-encode-data)
+- [`softDecode`](#soft-decode-data)
 
-### TypeScript
+<br />
 
-`tsconfig.json` is set up to interpret `dom` and `esnext` types, as well as `react` for `jsx`. Adjust according to your needs.
+## Generate a New Keychar
 
-## Continuous Integration
-
-### GitHub Actions
-
-Two actions are added by default:
-
-- `main` which installs deps w/ cache, lints, tests, and builds on all pushes against a Node and OS matrix
-- `size` which comments cost comparison of your library on every pull request using [`size-limit`](https://github.com/ai/size-limit)
-
-## Optimizations
-
-Please see the main `tsdx` [optimizations docs](https://github.com/palmerhq/tsdx#optimizations). In particular, know that you can take advantage of development-only optimizations:
+### [`encryptChar.generateKey(salt, password)`](#encryptchargeneratekeysalt-number-password-string)
 
 ```js
-// ./types/index.d.ts
-declare var __DEV__: boolean;
+import { encryptChar } from 'encrypt-char';
 
-// inside your code...
-if (__DEV__) {
-  console.log('foo');
-}
+const mySalt = 6;
+const mySecretPassword = 'secretPassword1234';
+
+const myKeychar = encryptChar.generateKey(mySalt, mySecretPassword);
 ```
 
-You can also choose to install and use [invariant](https://github.com/palmerhq/tsdx#invariant) and [warning](https://github.com/palmerhq/tsdx#warning) functions.
+## Hard Encode Data
 
-## Module Formats
+### [`encryptChar.hardEncode(data, keychar, password)`](#encryptcharhardencodedata-string-keychar-string-password-string)
 
-CJS, ESModules, and UMD module formats are supported.
+```js
+import { encryptChar } from 'encrypt-char';
 
-The appropriate paths are configured in `package.json` and `dist/index.js` accordingly. Please report if any issues are found.
+const mySecretPassword = 'secretPassword1234';
+const myText = 'Lorem ipsum dolor sit amet. 1234567890 !@#$%^&*()_+';
 
-## Named Exports
+const resultEncode = encryptChar.hardEncode(
+  myText,
+  myKeychar,
+  mySecretPassword
+);
 
-Per Palmer Group guidelines, [always use named exports.](https://github.com/palmerhq/typescript#exports) Code split inside your React app instead of your React library.
+// return 'hYjIzzH1Mjw1no7CeoA5Flnb3VQR6PKC4VmxZJLC9s2leCGv0NLxe9fdQUmDe9fx6NLA'
+```
 
-## Including Styles
+## Hard Decode Data
 
-There are many ways to ship styles, including with CSS-in-JS. TSDX has no opinion on this, configure how you like.
+### [`encryptChar.hardDecode(encodedData, keychar, password)`](#encryptcharharddecodeencodeddata-string-keychar-string-password-string)
 
-For vanilla CSS, you can include it at the root directory and add it to the `files` section in your `package.json`, so that it can be imported separately by your users and run through their bundler's loader.
+```js
+import { encryptChar } from 'encrypt-char';
 
-## Publishing to NPM
+const mySecretPassword = 'secretPassword1234';
+const myEncodedText =
+  'hYjIzzH1Mjw1no7CeoA5Flnb3VQR6PKC4VmxZJLC9s2leCGv0NLxe9fdQUmDe9fx6NLA';
 
-We recommend using [np](https://github.com/sindresorhus/np).
+const resultDecode = encryptChar.hardDecode(
+  myEncodedText,
+  myKeychar,
+  mySecretPassword
+);
+
+// return 'Lorem ipsum dolor sit amet. 1234567890 !@#$%^&*()_+'
+```
+
+## Soft Encode Data
+
+### [`encryptChar.softEncode(data)`](#encryptcharsoftencodedata-string)
+
+```js
+import { encryptChar } from 'encrypt-char';
+
+const myText = 'Lorem ipsum dolor sit amet. 1234567890 !@#$%^&*()_+';
+
+const resultDecode = encryptChar.softEncode(myText);
+
+// return 'r8VKooiJeVCJjAUIgATO4cjN1QzMyEDIuQXZtFGI0l2cgI3bs9GZg0WdzBXag0WZy9GT'
+```
+
+## Soft Decode Data
+
+### [`encryptChar.softDecode(encodedData)`](#encryptcharsoftdecodeencodeddata-string)
+
+```js
+import { encryptChar } from 'encrypt-char';
+
+const myEncodedText =
+  'r8VKooiJeVCJjAUIgATO4cjN1QzMyEDIuQXZtFGI0l2cgI3bs9GZg0WdzBXag0WZy9GT';
+
+const resultDecode = encryptChar.softDecode(myEncodedText);
+
+// return 'Lorem ipsum dolor sit amet. 1234567890 !@#$%^&*()_+'
+```
+
+<br />
+
+## Paramenters
+
+### `encryptChar.generateKey(salt: number, password: string)`
+
+The <b>"salt"</b> to increase the encoding complexity. <br>
+The <b>"password"</b> to sign and validate keychar. <br><br>
+
+### `encryptChar.hardEncode(data: string, keychar: string, password: string)`
+
+The <b>"data"</b> text to encode. <br>
+The <b>"keychar"</b> generated to encode text. <br>
+The <b>"password"</b> to sign and validate keychar. <br><br>
+
+### `encryptChar.hardDecode(encodedData: string, keychar: string, password: string)`
+
+The <b>"encodedData"</b> text previously encoded. <br>
+The <b>"keychar"</b> generated to decode text. <br>
+The <b>"password"</b> to sign and validate keychar. <br><br>
+
+### `encryptChar.softEncode(data: string)`
+
+The <b>"data"</b> text to encode. <br><br>
+
+### `encryptChar.softDecode(encodedData: string)`
+
+The <b>"encodedData"</b> text previously encoded. <br><br>
+
+## Recomendations
+
+### Store the generated <b>"keychar"</b> and <b>"password"</b> in a safe place! <br>
+
+The <b>"keychar"</b> is a unique key that guarantees encoding and decoding using only in  <b>"hardEncode"</b> and <b>"hardDecode"</b> methods.
+Losing the <b>"keychar"</b> or <b>"password"</b> makes it impossible to reverse any encoded text.
+
+<br>
+
+## Autor
+
+| [<img src="https://avatars2.githubusercontent.com/u/14978874?v=3&s=115"><br><sub>@anselmodev</sub>](https://github.com/anselmodev) |
+| :--------------------------------------------------------------------------------------------------------------------------------: |
+
