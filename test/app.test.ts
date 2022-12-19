@@ -7,6 +7,8 @@ import {
   beginEndKeysMock,
   passwordSecret,
   resultSalt,
+  validKeycharMock,
+  invalidKeycharMock,
 } from './mocks/string-number.mock';
 import { beginAndEndKeys } from '../src/helpers/begin-end-keys';
 import { secretGenerator } from '../src/helpers/secret-generator';
@@ -14,7 +16,7 @@ import {
   saltPasswordEncode,
   saltPasswordDecode,
 } from '../src/helpers/salt-password';
-import { keyCharGen } from '../src/lib/keychar';
+import { keycharGen, keycharValidate } from '../src/lib/keychar';
 
 describe('Base 64:', () => {
   it('should be encode', () => {
@@ -77,15 +79,23 @@ describe('Salt and Password:', () => {
     validSaltNumberMock,
     passwordSecret
   );
+  const fakeSaltAndPassword = 'fake salt and password';
 
-  it('should be encode salt and date successfully', () => {
+  it('should be encode salt and password successfully', () => {
     expect(encodedSaltDate).toBeTruthy();
   });
 
-  it('should be decode salt and date successfully', () => {
+  it('should be decode salt and password successfully from "saltFromKeychar" and "saltFromData"', () => {
     expect(
-      saltPasswordDecode(encodedSaltDate, encodedSaltDate, passwordSecret)
+      saltPasswordDecode(passwordSecret, encodedSaltDate, encodedSaltDate)
     ).toMatchObject({ passwordIsValid: true, saltValue: validSaltNumberMock });
+  });
+
+  it('should be decode salt and password successfully from "saltFromKeychar"', () => {
+    expect(saltPasswordDecode(passwordSecret, encodedSaltDate)).toMatchObject({
+      passwordIsValid: true,
+      saltValue: validSaltNumberMock,
+    });
   });
 
   it('should return a throw error of invalid salt value to encode', () => {
@@ -100,35 +110,31 @@ describe('Salt and Password:', () => {
     }).toThrow('Invalid Password.');
   });
 
-  it('should return a throw error of invalid salt value to decode', () => {
+  it('should return a throw error of invalid salt From Keychar', () => {
     expect(() => {
-      saltPasswordDecode(encodedSaltDate, '', passwordSecret);
+      saltPasswordDecode(passwordSecret, '');
     }).toThrow('Invalid string "saltFromKeychar" value.');
-
-    expect(() => {
-      saltPasswordDecode('', encodedSaltDate, passwordSecret);
-    }).toThrow('Invalid string "saltFromData" value.');
   });
 
   it('should return a throw error of empty password value to decode', () => {
     expect(() => {
-      saltPasswordDecode(encodedSaltDate, encodedSaltDate, '');
+      saltPasswordDecode('', encodedSaltDate, encodedSaltDate);
     }).toThrow('Empty Password.');
   });
 
   it('should return a throw error of password check value', () => {
     expect(() => {
       saltPasswordDecode(
-        'fake salt and password',
-        'fake salt and password',
-        passwordSecret
+        passwordSecret,
+        fakeSaltAndPassword,
+        fakeSaltAndPassword
       );
     }).toThrow('Password Check Error.');
   });
 });
 
 describe('Keychar Generate:', () => {
-  const keyCharGenerate = keyCharGen(validSaltNumberMock, passwordSecret);
+  const keyCharGenerate = keycharGen(validSaltNumberMock, passwordSecret);
 
   it('should return a new encoded salt and password', () => {
     expect(keyCharGenerate?.resultSalt).toEqual(resultSalt);
@@ -140,15 +146,53 @@ describe('Keychar Generate:', () => {
 
   it('should return a throw error of invalid salt value', () => {
     expect(() => {
-      keyCharGen(invalidSaltNumberMock, passwordSecret);
+      keycharGen(invalidSaltNumberMock, passwordSecret);
     }).toThrow('Invalid Salt value.');
   });
 
   it('should return a throw error of empty password value', () => {
     expect(() => {
-      keyCharGen(validSaltNumberMock, '');
+      keycharGen(validSaltNumberMock, '');
     }).toThrow('Empty Password.');
   });
+});
+
+describe('Keychar Validate:', () => {
+  it('should be keychar valid', () => {
+    expect(keycharValidate(validKeycharMock, passwordSecret)?.isValid).toEqual(true);
+  });
+
+  it('should be keychar invalid', () => {
+    expect(keycharValidate(invalidKeycharMock, passwordSecret)?.isValid).toEqual(false);
+  });
+
+  it('should be valid password to validate keychar', () => {
+    expect(keycharValidate(validKeycharMock, passwordSecret)?.isValid).toEqual(
+      true
+    );
+  });
+
+  it('should be invalid password to validate keychar', () => {
+    expect(keycharValidate(validKeycharMock, 'fakePassword')?.isValid).toEqual(
+      false
+    );
+  });
+
+  // it('should return a new keychar', () => {
+  //   expect(keyCharGenerate?.resultKeyChar?.length).toEqual(967);
+  // });
+
+  // it('should return a throw error of invalid salt value', () => {
+  //   expect(() => {
+  //     keyCharGen(invalidSaltNumberMock, passwordSecret);
+  //   }).toThrow('Invalid Salt value.');
+  // });
+
+  // it('should return a throw error of empty password value', () => {
+  //   expect(() => {
+  //     keyCharGen(validSaltNumberMock, '');
+  //   }).toThrow('Empty Password.');
+  // });
 });
 
 // describe('Decrypt String', () => {
