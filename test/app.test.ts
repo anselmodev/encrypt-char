@@ -1,5 +1,6 @@
 // import { encryptChar } from '../src';
 import { baseEncode, baseDecode } from '../src/helpers/base64';
+import { patterns } from '../src/helpers/patterns';
 import {
   base64Mock,
   validSaltNumberMock,
@@ -11,14 +12,29 @@ import {
   invalidKeycharMock,
 } from './mocks/string-number.mock';
 import { beginAndEndKeys } from '../src/helpers/begin-end-keys';
-import { secretGenerator } from '../src/helpers/secret-generator';
+import { secretGenerator } from '../src/helpers/secret';
 import {
   saltPasswordEncode,
   saltPasswordDecode,
 } from '../src/helpers/salt-password';
-import { keycharGen, keycharValidate } from '../src/lib/keychar';
+import { keycharGen, keycharValidate, keycharParse } from '../src/lib/keychar';
+import { checkArraySameValues } from '../src/helpers/array-check-values';
 
-describe('Base 64:', () => {
+describe('Check Array With Same Values:', () => {
+  const array1 = [1, 2, 3, 4, 5];
+  const array2 = [5, 2, 1, 4, 3];
+  const array3 = ['1', '2', '3', '4', '5'];
+
+  it('should be same values', () => {
+    expect(checkArraySameValues(array1, array2)).toEqual(true);
+  });
+
+  it('should not be same values', () => {
+    expect(checkArraySameValues(array1, array3)).toEqual(false);
+  });
+});
+
+describe('Base Encode:', () => {
   it('should be encode', () => {
     expect(baseEncode(base64Mock.decodedText)).toEqual(base64Mock.encodedText);
   });
@@ -159,11 +175,15 @@ describe('Keychar Generate:', () => {
 
 describe('Keychar Validate:', () => {
   it('should be keychar valid', () => {
-    expect(keycharValidate(validKeycharMock, passwordSecret)?.isValid).toEqual(true);
+    expect(keycharValidate(validKeycharMock, passwordSecret)?.isValid).toEqual(
+      true
+    );
   });
 
   it('should be keychar invalid', () => {
-    expect(keycharValidate(invalidKeycharMock, passwordSecret)?.isValid).toEqual(false);
+    expect(
+      keycharValidate(invalidKeycharMock, passwordSecret)?.isValid
+    ).toEqual(false);
   });
 
   it('should be valid password to validate keychar', () => {
@@ -178,21 +198,103 @@ describe('Keychar Validate:', () => {
     );
   });
 
-  // it('should return a new keychar', () => {
-  //   expect(keyCharGenerate?.resultKeyChar?.length).toEqual(967);
-  // });
+  it('should return a throw error of empty keychar value', () => {
+    expect(() => {
+      keycharValidate('', passwordSecret);
+    }).toThrow('Invalid "keychar" value.');
+  });
 
-  // it('should return a throw error of invalid salt value', () => {
-  //   expect(() => {
-  //     keyCharGen(invalidSaltNumberMock, passwordSecret);
-  //   }).toThrow('Invalid Salt value.');
-  // });
+  it('should return a throw error of empty password value', () => {
+    expect(() => {
+      keycharValidate(validKeycharMock, '');
+    }).toThrow('Invalid "password" value.');
+  });
+});
 
-  // it('should return a throw error of empty password value', () => {
-  //   expect(() => {
-  //     keyCharGen(validSaltNumberMock, '');
-  //   }).toThrow('Empty Password.');
-  // });
+describe('Keychar Parse:', () => {
+  const correctEncodeKeycharParse = keycharParse(
+    validKeycharMock,
+    passwordSecret,
+    'encode'
+  );
+
+  const correctDecodeKeycharParse = keycharParse(
+    validKeycharMock,
+    passwordSecret,
+    'decode'
+  );
+
+  it('should parse encode correct keys', () => {
+    expect(
+      checkArraySameValues(
+        Object.keys(correctEncodeKeycharParse),
+        patterns.baseKeys.split('')
+      )
+    ).toEqual(true);
+  });
+
+  it('should parse decode correct keys', () => {
+    expect(
+      checkArraySameValues(
+        Object.keys(correctDecodeKeycharParse),
+        patterns.baseKeys.split('')
+      )
+    ).toEqual(true);
+  });
+
+  it('should parse encode correct values', () => {
+    expect(
+      checkArraySameValues(
+        Object.values(correctEncodeKeycharParse),
+        patterns.baseKeys.split('')
+      )
+    ).toEqual(true);
+  });
+
+  it('should parse decode correct values', () => {
+    expect(
+      checkArraySameValues(
+        Object.values(correctDecodeKeycharParse),
+        patterns.baseKeys.split('')
+      )
+    ).toEqual(true);
+  });
+
+  it('should return a throw error of parse encode invalid keychar', () => {
+    expect(() => {
+      keycharParse(invalidKeycharMock, passwordSecret, 'encode');
+    }).toThrow('Invalid Keychar.');
+  });
+
+  it('should return a throw error of parse decode invalid keychar', () => {
+    expect(() => {
+      keycharParse(invalidKeycharMock, passwordSecret, 'decode');
+    }).toThrow('Invalid Keychar.');
+  });
+
+  it('should return a throw error of parse encode empty keychar', () => {
+    expect(() => {
+      keycharParse('', passwordSecret, 'encode');
+    }).toThrow('Invalid "keychar" value.');
+  });
+
+  it('should return a throw error of parse decode empty keychar', () => {
+    expect(() => {
+      keycharParse('', passwordSecret, 'decode');
+    }).toThrow('Invalid "keychar" value.');
+  });
+
+  it('should return a throw error of parse encode empty password', () => {
+    expect(() => {
+      keycharParse(validKeycharMock, '', 'encode');
+    }).toThrow('Invalid "password" value.');
+  });
+
+  it('should return a throw error of parse decode empty password', () => {
+    expect(() => {
+      keycharParse(validKeycharMock, '', 'decode');
+    }).toThrow('Invalid "password" value.');
+  });
 });
 
 // describe('Decrypt String', () => {

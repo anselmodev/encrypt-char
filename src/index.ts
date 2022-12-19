@@ -1,19 +1,37 @@
+import { baseEncode, baseDecode } from './helpers/base64';
+
 export const encryptChar = {
-  encode(data: string, keychar: string) {
+  hardEncode(data: string, keychar: string, password: string) {
     const getData = data;
     const getKeychar = keychar;
 
-    console.log(getData, getKeychar);
+    console.log(getData, getKeychar, password);
 
     return 'encoded';
   },
 
-  decode(data: string, keychar: string) {
+  hardDecode(data: string, keychar: string, password: string) {
     const getData = data;
     const getKeychar = keychar;
 
-    console.log(getData, getKeychar);
+    console.log(getData, getKeychar, password);
 
     return 'decoded';
+  },
+
+  softEncode(data: string) {
+    if (!data?.length || typeof data !== 'string') {
+      throw new Error('Invalid "data" to encode.');
+    }
+
+    return baseEncode(data);
+  },
+
+  softDecode(data: string) {
+    if (!data?.length || typeof data !== 'string') {
+      throw new Error('Invalid "data" to encode.');
+    }
+
+    return baseDecode(data);
   },
 };
