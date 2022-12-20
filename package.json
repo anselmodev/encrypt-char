@@ -35,6 +35,7 @@
     "trailingComma": "es5"
   },
   "name": "encrypt-char",
+  "description": "High performance encryption and decryption tool.",
   "author": "Anselmo Lima - @anselmodev",
   "bugs": {
     "url": "https://github.com/anselmodev/encrypt-char/issues"
@@ -52,6 +53,8 @@
     }
   ],
   "keywords": [
+    "character",
+    "encrypt",
     "encryption",
     "crypt",
     "base64",
