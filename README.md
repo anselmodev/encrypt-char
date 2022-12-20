@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="./encrypt-icon.jpg" alt="Data encryption and decryption tool" title="Data encryption and decryption tool" width="200" />
+  <img src="https://raw.githubusercontent.com/anselmodev/encrypt-char/master/encrypt-icon.jpg" alt="Data encryption and decryption tool" title="Data encryption and decryption tool" width="200" />
 </p>
 
 <h1 align="center">encrypt-char</h1>
 
 ## Features
 
-- Lightweight, zero dependencies.
+- Zero dependencies.
 - Works with any NodeJs projects.
 - High performance and security.
 - Simple usage.
@@ -29,11 +29,11 @@ $ yarn add encrypt-char
 
 #### Methods
 
-- [`generateKey`](#generate-a-new-keychar)
-- [`hardEncode`](#hard-encode-data)
-- [`hardDecode`](#hard-decode-data)
-- [`softEncode`](#soft-encode-data)
-- [`softDecode`](#soft-decode-data)
+- [`.generateKey`](#generate-a-new-keychar)
+- [`.hardEncode`](#hard-encode-data)
+- [`.hardDecode`](#hard-decode-data)
+- [`.softEncode`](#soft-encode-data)
+- [`.softDecode`](#soft-decode-data)
 
 <br />
 
