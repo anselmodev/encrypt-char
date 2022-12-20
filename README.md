@@ -2,7 +2,9 @@
   <img src="https://raw.githubusercontent.com/anselmodev/encrypt-char/master/encrypt-icon.jpg" alt="Data encryption and decryption tool" title="Data encryption and decryption tool" width="200" />
 </p>
 
-<h1 align="center">encrypt-char</h1>
+<h1 align="center">encrypt-char
+</h1>
+<p align="center">Data encryption and decryption tool</p>
 
 ## Features
 
