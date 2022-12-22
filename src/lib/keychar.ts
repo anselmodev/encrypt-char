@@ -6,7 +6,7 @@ import {
   // saltPasswordDecode,
 } from '../helpers/salt-password';
 
-const secretResult: string[] = [];
+let secretResult: string[] = [];
 
 const __getSaltOfKeychar = (keychar: string) => {
   const resultCheck = (keychar.match(/-/g) || []).length;
@@ -53,11 +53,15 @@ const keycharGen = (salt: number, password: string) => {
   const primaryKeys = __primaryKeyGen(getSalt);
   const secondaryKeys = __secondaryKeyGen();
 
+  const secret = secretResult.join('');
+
   const resultKeys = {
-    secret: secretResult.join(''),
+    secret,
     primary: primaryKeys,
     secondary: secondaryKeys,
   };
+
+  secretResult = [];
 
   return {
     resultKeyChar:
